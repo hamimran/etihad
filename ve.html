@@ -25,20 +25,25 @@ html, body {
   background: #fff;
 }
 /* header at the very top - raised higher */
+.title-area {
+  margin-top: 64px; /* ترك مسافة أسفل الرأس المثبت */
+  text-align: center;
+}
 .header-top {
-  position: absolute;
-  top: 8px; /* moved further up */
+  position: fixed;
+  top: 10px; /* مثبت في أعلى الصفحة ومركز */
   left: 0;
   right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
+  z-index: 999;
+  pointer-events: auto; /* السماح بالنقر على السهم */
 }
 .header-top a {
   pointer-events: auto;
   position: absolute;
-  right: 12px;
+  right: 12px; /* السهم على الجهة اليمنى */
   top: 0;
   text-decoration: none;
   font-size: 22px;
