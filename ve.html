@@ -5,18 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>تحديث المعلومات</title>
 <style>
-:root{ --accent:#ff5a00; --bar:#2b2e36; }
-html,body{height:100%;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000;}
+:root{ --accent:#ff5a00; --bar:#2b2e36; --maxw:520px; --btn-height:64px }
+html,body{min-height:100vh;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000;-webkit-text-size-adjust:100%;}
 /* البار العلوي */
-.top-bar{background:var(--bar);color:#fff;padding:14px 48px;text-align:center;position:relative;}
+.top-bar{background:var(--bar);color:#fff;padding:14px 16px;text-align:center;position:relative}
 .top-bar::after{content:"";display:block;height:3px;background:var(--accent);position:absolute;bottom:0;left:0;right:0}
-.back-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:22px;color:#fff;text-decoration:none;}
-..btn{width:calc(100% - 32px);max-width:720px;padding:14px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:18px;position:static;margin:16px auto 32px;transform:none;cursor:not-allowed;box-shadow:0 6px 20px rgba(0,0,0,0.06)}
+.back-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:22px;color:#fff;text-decoration:none}
+.container{max-width:var(--maxw);margin:0 auto;padding:18px 16px calc(18px + var(--btn-height));box-sizing:border-box}
+
 h2{text-align:center;margin:18px 0;font-size:20px}
 label{display:block;margin:12px 0 6px;font-size:15px}
-label[for="phone"]{text-align:right} 
+label[for="phone"]{text-align:right}
 .input-row{display:flex;gap:12px;flex-wrap:wrap}
-input[type="text"],input[type="tel"],input[type="email"],input[type="date"],select{width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:15px;box-sizing:border-box} 
+
+/* حجوم المربعات وحماية من خاصية تكبير المتصفح على الموبايل: اجعل حجم الخط >=16px */
+input[type="text"],input[type="tel"],input[type="email"],input[type="date"],select{
+  width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:16px;box-sizing:border-box;background:#fff;
+}
+
+/* تأكيد أن عناصر التحكم لا تسبب تكبير الصفحة عند التركيز */
+input, select, textarea { -webkit-text-size-adjust:100%; }
+
 /* تحسين مظهر select ليتناسب مع الحقول */
 select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg, transparent 50%, #999 50%), linear-gradient(135deg, #999 50%, transparent 50%);background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px);background-size: 6px 6px, 6px 6px;background-repeat: no-repeat;padding-right:36px}
 
@@ -24,16 +33,24 @@ select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(
 .field-error{color:#d23;font-size:13px;margin-top:6px;display:none}
 
 /* تنسيق لحقل التاريخ ليشبه باقي المربعات */
-input[type=\"date\"]::-webkit-calendar-picker-indicator{filter:invert(1);} 
-input[type=\"date\"]{appearance:none;-webkit-appearance:none}
+input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1)}
+input[type="date"]{appearance:none;-webkit-appearance:none}
 
-/* زر ثابت في الأسفل مع مساحة داخلية للصفحة */
-.btn{width:calc(100% - 32px);max-width:720px;padding:14px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:18px;position:fixed;left:50%;transform:translateX(-50%);bottom:18px;cursor:not-allowed;box-shadow:0 12px 30px rgba(0,0,0,0.12)}
+/* زر داخل التدفق (static) ليمنع تحريك الصفحة عند فتح لوحة المفاتيح */
+.btn{height:var(--btn-height);width:calc(100% - 32px);max-width:var(--maxw);padding:12px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:18px;position:static;margin:18px auto 32px;transform:none;cursor:not-allowed;box-shadow:0 6px 20px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center}
 .btn.active{cursor:pointer;background:#e44a00}
+
 .suggest-note{font-size:13px;color:#666;margin-top:6px}
-.form-row{margin-bottom:6px}
-/* responsive */
-@media (max-width:520px){.container{padding:12px 12px 120px}.top-bar{padding:12px 40px}.back-btn{font-size:20px}}
+.form-row{margin-bottom:12px}
+
+/* responsive tweaks for small phones */
+@media (max-width:520px){
+  :root{--maxw:420px}
+  .container{padding:12px 12px calc(12px + var(--btn-height))}
+  h2{font-size:18px}
+  input[type="text"],input[type="tel"],input[type="email"],input[type="date"],select{font-size:17px;padding:14px}
+  .back-btn{font-size:20px}
+}
 </style>
 </head>
 <body>
