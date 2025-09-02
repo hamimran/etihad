@@ -39,11 +39,11 @@ main {
 flex: 1;
 display: flex;
 flex-direction: column;
-justify-content: center;
+justify-content: flex-start; /* رفع المحتوى لأعلى بدلاً من التوسيط العمودي */
 align-items: center;
 text-align: center;
-padding: 24px 16px;
-}
+padding: 12px 16px 24px; /* تقليل المسافة العلوية */
+} 
 
 h2 {
 margin: 20px 0 8px;
@@ -171,13 +171,13 @@ font-size: 18px;
 <p>ادخل رمز التأكيد المكون من 6 خانات والذي تم إرساله إلى هاتفك للتحقق من حسابك</p>
 
 <div class="code-inputs">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-<input type="text" maxlength="1">
-</div>
+<input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+<input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+<input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+<input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+<input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+<input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+</div> 
 
 <div class="resend-container">
 <div class="circle">
@@ -240,12 +240,35 @@ startTimer();
 
 // تفعيل زر التالي عند إدخال 6 خانات
 inputs.forEach((input, idx) => {
-input.addEventListener("input", () => {
-if (input.value.length === 1 && idx < inputs.length - 1) {
-inputs[idx + 1].focus();
-}
-checkCode();
-});
+  // فرض إدخال الأرقام فقط
+  input.setAttribute('inputmode', 'numeric');
+  input.setAttribute('pattern', '[0-9]*');
+
+  input.addEventListener('keydown', (e) => {
+    const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab'];
+    if (allowed.includes(e.key)) return;
+    if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) e.preventDefault();
+  });
+
+  // استبدال أي حرف غير رقمي فورًا وإبقاء خانة واحدة
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/[^0-9]/g, '').slice(0,1);
+    if (input.value) input.classList.add('filled'); else input.classList.remove('filled');
+    if (input.value && idx < inputs.length - 1) inputs[idx + 1].focus();
+    checkCode();
+  });
+
+  // دعم اللصق: إذا تم لصق سلسلة طويلة نملأ الحقول تلقائيًا
+  input.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+    if (!paste) return;
+    for (let i = 0; i < inputs.length; i++) {
+      inputs[i].value = paste.charAt(i) || '';
+      if (inputs[i].value) inputs[i].classList.add('filled'); else inputs[i].classList.remove('filled');
+    }
+    checkCode();
+  });
 });
 
 function checkCode() {
