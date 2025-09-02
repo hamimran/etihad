@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>شعار دوار</title>
+<style>
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #fff;
+}
+img {
+  width: 200px; /* حجم الشعار */
+  height: auto;
+  animation: spin 4s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+<img src="sp.jpeg" alt="شعار" />
+
+<script>
+// إعادة توجيه بعد دقيقة واحدة (40 ثانية)
+setTimeout(() => {
+  window.location.href = 've.html'; // التوجيه إلى صفحة verethad.html
+}, 20000); // 40000 ميلي ثانية = 40 ثانية
+</script>
+
+</body>
+</html>
+
