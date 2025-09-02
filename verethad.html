@@ -130,18 +130,23 @@ cursor: pointer;
 
 /* زر التالي */
 #nextBtn {
-width: 92%;
-max-width: 400px;
-padding: 14px;
-font-size: 18px;
-font-weight: bold;
-border: none;
-border-radius: 8px;
-background: #ddd;
-color: #888;
-cursor: not-allowed;
-margin: 24px auto;
-transition: 0.3s;
+  position: fixed;
+  left: 50%;
+  bottom: 36px; /* رفعت الزر قليلاً */
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 400px;
+  padding: 14px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  background: #ddd;
+  color: #888;
+  cursor: not-allowed;
+  z-index: 10001;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  transition: 0.3s;
 }
 #nextBtn.active {
 background: #ff6a2b;
