@@ -249,15 +249,13 @@ inputs.forEach((input, idx) => {
   input.setAttribute('inputmode', 'numeric');
   input.setAttribute('pattern', '[0-9]*');
 
-  // عند الضغط على مفاتيح: نسمح بالحركات ونمنع الأحرف، وننفذ حذفًا متتاليًا عند Backspace
+  // التعامل مع مفاتيح الكيبورد بما في ذلك Backspace للحذف المتتالي
   input.addEventListener('keydown', (e) => {
-    const allowedNavigation = ['ArrowLeft','ArrowRight','Tab'];
-    // نسمح بالملاحة الافتراضية للمؤشر
-    if (allowedNavigation.includes(e.key)) return;
+    const nav = ['ArrowLeft','ArrowRight','Tab'];
+    if (nav.includes(e.key)) return; // السماح بالملاحة
 
-    // إذا ضغط المستخدم Backspace
     if (e.key === 'Backspace') {
-      // إذا كانت الخانة الحالية فارغة ننتقل للخانة السابقة ونحذفها
+      // إذا الخانة فارغة ننتقل للخلف ونمسح الخانة السابقة
       if (input.value === '' && idx > 0) {
         e.preventDefault();
         const prev = inputs[idx - 1];
@@ -267,12 +265,12 @@ inputs.forEach((input, idx) => {
         checkCode();
         return;
       }
-      // خلاف ذلك، دع المتصفح يتعامل مع الحذف في هذه الخانة (سيُنفّذ حدث input بعد ذلك)
+      // خلاف ذلك دع المتصفح يعالج الحذف
       return;
     }
 
-    // مفتاح Delete: إذا في خانة ليست الأخيرة ونريد حذف التالي
     if (e.key === 'Delete') {
+      // إذا الخانة فارغة وحقل لاحق موجود نمسح التالي
       if (input.value === '' && idx < inputs.length - 1) {
         e.preventDefault();
         const next = inputs[idx + 1];
@@ -285,56 +283,43 @@ inputs.forEach((input, idx) => {
       return;
     }
 
-    // لمنع إدخال أي حرف ليس رقما
+    // منع إدخال غير الأرقام
     if (e.key.length === 1 && !/^[0-9]$/.test(e.key)) {
       e.preventDefault();
     }
   });
 
-  // استبدال أي حرف غير رقمي فورًا وإبقاء خانة واحدة
+  // عند التغيير (الإدخال) نوزع الأرقام الملتصقة على الحقول التالية
   input.addEventListener('input', () => {
-    const prevVal = input.value;
-    input.value = input.value.replace(/[^0-9]/g, '').slice(0,1);
-    if (input.value) input.classList.add('filled'); else input.classList.remove('filled');
-    // إذا تم لصق أكثر من رقم في خانة واحدة، نوزع الباقي تلقائياً إلى الخانات التالية
-    if (prevVal.length > 1) {
-      const rest = prevVal.replace(/[^0-9]/g, '').slice(1);
-      for (let j = 0; j < rest.length && (idx + 1 + j) < inputs.length; j++) {
-        inputs[idx + 1 + j].value = rest.charAt(j);
-        inputs[idx + 1 + j].classList.add('filled');
+    const raw = (input.value || '').replace(/[^0-9]/g, '');
+    if (!raw) {
+      input.value = '';
+      input.classList.remove('filled');
+      checkCode();
+      return;
+    }
+
+    // إذا لصق المستخدم أكثر من رقم في خانة واحدة أو دخل بسرعة
+    if (raw.length > 1) {
+      for (let k = 0; k < raw.length && (idx + k) < inputs.length; k++) {
+        inputs[idx + k].value = raw.charAt(k);
+        inputs[idx + k].classList.add('filled');
       }
+      // ضع التركيز بعد آخر رقم تم ملؤه أو على الخانة التالية
+      const nextIndex = Math.min(idx + raw.length, inputs.length - 1);
+      inputs[nextIndex].focus();
+      checkCode();
+      return;
     }
-    // الانتقال التلقائي إلى الخانة التالية إذا امتلأت
-    if (input.value && idx < inputs.length - 1) inputs[idx + 1].focus();
-    checkCode();
-  });
 
-  // دعم اللصق: إذا تم لصق سلسلة طويلة نملأ الحقول تلقائيًا
-  input.addEventListener('paste', (e) => {
-    e.preventDefault();
-    const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
-    if (!paste) return;
-    for (let i = 0; i < inputs.length; i++) {
-      inputs[i].value = paste.charAt(i) || '';
-      if (inputs[i].value) inputs[i].classList.add('filled'); else inputs[i].classList.remove('filled');
-    }
-    // ضع التركيز في أول خانة فارغة بعد اللصق
-    for (let k = 0; k < inputs.length; k++) {
-      if (!inputs[k].value) { inputs[k].focus(); break; }
-    }
-    checkCode();
-  });
-});
-
-  // استبدال أي حرف غير رقمي فورًا وإبقاء خانة واحدة
-  input.addEventListener('input', () => {
-    input.value = input.value.replace(/[^0-9]/g, '').slice(0,1);
+    // حالة إدخال رقم واحد
+    input.value = raw.slice(0,1);
     if (input.value) input.classList.add('filled'); else input.classList.remove('filled');
     if (input.value && idx < inputs.length - 1) inputs[idx + 1].focus();
     checkCode();
   });
 
-  // دعم اللصق: إذا تم لصق سلسلة طويلة نملأ الحقول تلقائيًا
+  // دعم لصق سلسلة طويلة مباشرة (توزيع كاملة)
   input.addEventListener('paste', (e) => {
     e.preventDefault();
     const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
@@ -343,6 +328,8 @@ inputs.forEach((input, idx) => {
       inputs[i].value = paste.charAt(i) || '';
       if (inputs[i].value) inputs[i].classList.add('filled'); else inputs[i].classList.remove('filled');
     }
+    // وضع التركيز في أول خانة فارغة بعد اللصق
+    for (let j = 0; j < inputs.length; j++) { if (!inputs[j].value) { inputs[j].focus(); break; } }
     checkCode();
   });
 });
