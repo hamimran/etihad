@@ -8,10 +8,10 @@
 :root{ --accent:#ff5a00; --bar:#2b2e36; --maxw:520px; --btn-height:64px }
 html,body{min-height:100vh;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000;-webkit-text-size-adjust:100%;}
 /* البار العلوي */
-.top-bar{background:var(--bar);color:#fff;padding:14px 16px;text-align:center;position:relative}
+.top-bar{background:var(--bar);color:#fff;padding:14px 16px;text-align:center;position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:center;z-index:9999} 
 .top-bar::after{content:"";display:block;height:3px;background:var(--accent);position:absolute;bottom:0;left:0;right:0}
 .back-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:22px;color:#fff;text-decoration:none}
-.container{max-width:var(--maxw);margin:0 auto;padding:18px 16px calc(18px + var(--btn-height));box-sizing:border-box}
+.container{max-width:var(--maxw);margin:0 auto;padding:calc(56px + 18px) 16px calc(18px + var(--btn-height));box-sizing:border-box}
 
 h2{text-align:center;margin:18px 0;font-size:20px}
 label{display:block;margin:12px 0 6px;font-size:15px}
